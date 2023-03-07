@@ -45,7 +45,7 @@ class MaintenanceComponent extends Component {
 			$maintenance       = new Maintenance();
 			$isMaintenanceMode = $maintenance->isMaintenanceMode();
 			if ($isMaintenanceMode) {
-				// $this->Flash->warning( __d( 'maintenance', 'Maintenance mode active - your IP is in the whitelist.' ) );
+				$this->Flash->warning( __d( 'maintenance', 'Maintenance mode active - your IP is in the whitelist.' ) );
 				$controller = $this->getController();
 				$controller->set( 'maintenance_mode', true );
 			}

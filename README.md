@@ -1,7 +1,13 @@
 # Maintenance plugin for CakePHP
 
+A maintenance mode for your CakePHP application. With this plugin you can put your app into maintenance mode. With a whitelist you can also determine who can still access your application. It comes to you with a component, console and middleware.
+
 > Warning: This tool should not be used if the DB connection or your application goes down completely due to upgrades.
 There it would fail hard. It should only be used for soft maintenance work.
+
+<p align="center">
+    <img src="under_maintenance.png">
+</p>
 
 ## Installation
 
@@ -14,13 +20,13 @@ composer require triopsi/maintenance
 ```
 
 ## Load Plugin via bin/bake
-Via the Load task you are able to load plugins in your application.php. You can do this by running:
+Via the load task you are able to load plugins in your application.php. You can do this by running:
 ```
 bin/cake plugin load Maintenance
 ```
 
 ### Manually Installing
-If the plugin you want to install is not available on packagist.org, you can clone or copy the plugin code into your plugins directory. *plugin/*
+If the plugin you want to install is not available on packagist.org, you can clone or copy the plugin code into your plugins directory. */plugin/*
 
 Put this in the application.php in the bootstrap method:
 ```php
@@ -47,7 +53,7 @@ php composer.phar dumpautoload
 ```
 
 ## Customizing
-Make sure you have a template file in `'templates' . DS . 'Error' . DS` named `maintenance.php`.
+Make sure you have a template file in `/templates/Error/` named `maintenance.php`.
 
 Configs:
 - `className`: Sets the view classname.Accepts either a short name (Ajax) a plugin name (MyPlugin.Ajax) or a fully namespaced name (App\View\AppView) or null to use the View class provided by CakePHP.
@@ -60,20 +66,43 @@ Configs:
 - `api_prefix`: API Url Suffix. Maintenance Mode are disable for this prefix. Type false for disable exceptions.
 
 Those can be used to adjust the content of the maintenance mode page.
-
 ## Maintenance Component
 This component adds functionality on top:
-- A flash message shows you if you are currently whitelisted in case maintenance mode is active (and you just
-  don't see it due to the whitelisting).
+- A flash message shows you if you are currently whitelisted in case maintenance mode is active (and you just don't see it due to the whitelisting).
 ### How to setup
 ```php
-// In your App Controller Class (src/Controller/AppController)
+// In your App Controller Class (/src/Controller/AppController)
 public function initialize() {
     ...
     $this->loadComponent( 'Maintenance.Maintenance' );
 }
 ```
+### Diable the Flash message
+Write in the `/config/app.php` a variable like:
+```
+maintenance => array(
+	'flash' => false
+)
+```
+or in the initialize method in `/src/Controller/AppController`:
+```
+Cake\Core\Configure::write( 'maintenance.flash', true )
+```
+Instead of a flash message, something else can also be triggered. 
+A view variable named `maintenance_mode` is written in the component. With the help of this variable it is possible to query the status in the template files. This could look something like this:
 
+```
+// in the layout or view file:
+<?php
+if (isset( $maintenance_mode ) && true === $maintenance_mode ) {
+?>
+<div class="bg-warning text-center">
+	<?php echo __( 'Maintenance Modus is active' ); ?>
+</div>
+<?php
+}
+?>
+```
 ## MaintenanceMode Commands
 This should be the preferred way of enabling and disabling the maintenance mode for your application.
 
@@ -118,7 +147,27 @@ Disable maintenance mode
 ```
 ./bin/cake maintenance_mode deativate
 ```
-Or Reset with Whitelited Ip Address
+Or Reset the mode (disable maintenance mode and delete all whitelist ip addresses)
 ```
 ./bin/cake maintenance_mode reset
+```
+Add ip address in the whitelist
+```
+./bin/cake maintenance_mode whitelist 127.0.0.1
+```
+Add ip addresses in the whitelist
+```
+./bin/cake maintenance_mode whitelist 127.0.0.1,127.0.0.2,127.0.0.3
+```
+Remove a ip address from the whitelist
+```
+./bin/cake maintenance_mode -r whitelist 127.0.0.1
+```
+List all ip addresses
+```
+./bin/cake maintenance_mode whitelist
+```
+Get status
+```
+./bin/cake maintenance_mode status
 ```
