@@ -22,7 +22,7 @@ use Maintenance\Command\MaintenanceModeCommand;
 /**
  * Plugin for Maintenance
  */
-class MaintenancePlugin extends BasePlugin {
+class Plugin extends BasePlugin {
 	/**
 	 * Load all the plugin configuration and bootstrap logic.
 	 *

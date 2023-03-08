@@ -37,16 +37,18 @@ class MaintenanceComponent extends Component {
 	 * @return \Cake\Http\Response|null|void
 	 */
 	public function beforeFilter( EventInterface $event ) {
-		if (Configure::read( 'maintenance.flash', true )) {
-			if (!in_array( 'Flash', $this->components )) {
-				throw new Exception( 'Flash component missing in AppController setup.' );
-			}
+		if (Configure::read( 'maintenance.checkbefore', true )) {
 			// Is the maintenance mode on?
 			$maintenance       = new Maintenance();
+			$controller        = $this->getController();
 			$isMaintenanceMode = $maintenance->isMaintenanceMode();
 			if ($isMaintenanceMode) {
-				$this->Flash->warning( __d( 'maintenance', 'Maintenance mode active - your IP is in the whitelist.' ) );
-				$controller = $this->getController();
+				if (Configure::read( 'maintenance.flash', true )) {
+					if (!in_array( 'Flash', $this->components )) {
+						throw new Exception( 'Flash component missing in AppController setup.' );
+					}
+					$this->Flash->warning( __d( 'maintenance', 'Maintenance mode active - your IP is in the whitelist.' ) );
+				}
 				$controller->set( 'maintenance_mode', true );
 			}
 		}

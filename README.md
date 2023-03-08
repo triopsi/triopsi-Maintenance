@@ -2,11 +2,11 @@
 
 A maintenance mode for your CakePHP application. With this plugin you can put your app into maintenance mode. With a whitelist you can also determine who can still access your application. It comes to you with a component, console and middleware.
 
-> Warning: This tool should not be used if the DB connection or your application goes down completely due to upgrades.
+> :warning: This tool should not be used if the DB connection or your application goes down completely due to upgrades.
 There it would fail hard. It should only be used for soft maintenance work.
 
 <p align="center">
-    <img src="under_maintenance.png">
+    <img height="300" src="under_maintenance.png">
 </p>
 
 ## Installation
@@ -86,7 +86,7 @@ maintenance => array(
 ```
 or in the initialize method in `/src/Controller/AppController`:
 ```
-Cake\Core\Configure::write( 'maintenance.flash', true )
+Cake\Core\Configure::write( 'maintenance.flash', false )
 ```
 Instead of a flash message, something else can also be triggered. 
 A view variable named `maintenance_mode` is written in the component. With the help of this variable it is possible to query the status in the template files. This could look something like this:
